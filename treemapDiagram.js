@@ -7,8 +7,8 @@ async function treemapDiagram(d3) {
   console.log(movieData);
 
   const margin = { top: 100, right: 20, bottom: 20, left: 20 };
-  const width = 954;
-  const height = 954;
+  const width = 800;
+  const height = 800;
 
   const root = d3.select("#root");
 
@@ -36,7 +36,10 @@ async function treemapDiagram(d3) {
     .attr("y", d => d.y)
     .text(d => d.text);
 
+  const color = d3.scaleOrdinal(d3.schemeCategory10);
+
   const treemap = d3.treemap()
+    .padding(1)
     .size([width, height]);
 
   const rootNode = treemap(
@@ -44,6 +47,7 @@ async function treemapDiagram(d3) {
       .sum(d => d.value)
       .sort((a, b) => (b.value - a.value)),
   );
+  console.log(rootNode);
 
   const chart = svg.append("g")
     .attr("transform", `translate(${margin.left}, ${margin.top})`);
@@ -56,5 +60,9 @@ async function treemapDiagram(d3) {
   tiles.append("rect")
     .attr("class", "tile")
     .attr("width", d => (d.x1 - d.x0))
-    .attr("height", d => (d.y1 - d.y0));
+    .attr("height", d => (d.y1 - d.y0))
+    .attr("fill", d => {
+      while (d.depth > 1) d = d.parent;
+      return color(d.data.name);
+    });
 }
