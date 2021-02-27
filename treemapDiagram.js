@@ -59,6 +59,9 @@ async function treemapDiagram(d3) {
 
   tiles.append("rect")
     .attr("class", "tile")
+    .attr("data-name", d => d.data.name)
+    .attr("data-category", d => d.data.category)
+    .attr("data-value", d => d.data.value)
     .attr("width", d => (d.x1 - d.x0))
     .attr("height", d => (d.y1 - d.y0))
     .attr("fill", d => {
