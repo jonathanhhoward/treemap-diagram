@@ -39,7 +39,7 @@ async function treemapDiagram(d3) {
   const color = d3.scaleOrdinal(d3.schemeCategory10);
 
   const treemap = d3.treemap()
-    .padding(1)
+    .paddingOuter(1)
     .size([width, height]);
 
   const rootNode = treemap(
@@ -67,5 +67,6 @@ async function treemapDiagram(d3) {
     .attr("fill", d => {
       while (d.depth > 1) d = d.parent;
       return color(d.data.name);
-    });
+    })
+    .attr("stroke", "white");
 }
