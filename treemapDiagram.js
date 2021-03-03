@@ -31,6 +31,7 @@ async function treemapDiagram(d3) {
     ])
     .join("text")
     .attr("id", d => d.id)
+    .attr("text-anchor", "middle")
     .attr("x", svg.attr("width") * 0.5)
     .attr("y", d => d.y)
     .text(d => d.text);
@@ -48,6 +49,14 @@ async function treemapDiagram(d3) {
 
   const tileData = treemap(rootNode).leaves();
 
+  const tooltip = Tooltip(
+    root,
+    "data-value",
+    d => d.data.value,
+    d => `${d.data.name}<br>${d3.format("$,")(d.data.value)}`,
+  );
+  tooltip().attr("id", "tooltip");
+
   const chart = svg.append("g")
     .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
@@ -63,7 +72,9 @@ async function treemapDiagram(d3) {
     .attr("data-value", d => d.data.value)
     .attr("width", d => (d.x1 - d.x0))
     .attr("height", d => (d.y1 - d.y0))
-    .attr("fill", d => color(d.data.category));
+    .attr("fill", d => color(d.data.category))
+    .on("mousemove", tooltip.show)
+    .on("mouseout", tooltip.hide);
 
   const itemWidth = 110;
   const swatchSize = 12;
@@ -96,4 +107,32 @@ async function treemapDiagram(d3) {
     .attr("y", 0)
     .attr("dy", ".71em")
     .text(d => d);
+
+  function Tooltip(
+    selection,
+    dataName,
+    dataValueFn,
+    htmlContentFn,
+    left = 20,
+    top = 20,
+  ) {
+    const div = selection.append("div")
+      .style("position", "absolute")
+      .style("z-index", 10)
+      .style("display", "none");
+
+    const tooltip = () => div;
+
+    tooltip.show = (event, data) => {
+      div.attr(dataName, dataValueFn(data))
+        .html(htmlContentFn(data))
+        .style("left", `${(event.pageX + left)}px`)
+        .style("top", `${(event.pageY + top)}px`)
+        .style("display", "block");
+    };
+
+    tooltip.hide = () => div.style("display", "none");
+
+    return tooltip;
+  }
 }

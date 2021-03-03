@@ -14,16 +14,20 @@ html {
   font-weight: bold;
 }
 
-#description {
-  font-size: 1rem;
-}
-
-#title,
-#description {
-  text-anchor: middle;
-}
-
 .centered {
   margin: 0 auto;
   display: block;
+}
+
+.tile:hover {
+  stroke: #333333;
+  stroke-width: 2;
+}
+
+#tooltip {
+  background-color: #333333;
+  font-size: 0.8rem;
+  color: #eeeeee;
+  border-radius: 4px;
+  padding: 8px;
 }
