@@ -5,7 +5,7 @@ async function treemapDiagram(d3) {
     "https://cdn.freecodecamp.org/testable-projects-fcc/data/tree_map/movie-data.json",
   );
 
-  const margin = { top: 100, right: 20, bottom: 20, left: 20 };
+  const margin = { top: 100, right: 20, bottom: 50, left: 20 };
   const width = 800;
   const height = 800;
 
@@ -35,7 +35,8 @@ async function treemapDiagram(d3) {
     .attr("y", d => d.y)
     .text(d => d.text);
 
-  const color = d3.scaleOrdinal(d3.schemeCategory10);
+  const movieDomain = movieData.children.map(child => child.name);
+  const color = d3.scaleOrdinal(movieDomain, d3.schemeCategory10);
 
   const rootNode = d3.hierarchy(movieData)
     .sum(d => d.value)
@@ -43,7 +44,7 @@ async function treemapDiagram(d3) {
 
   const treemap = d3.treemap()
     .size([width, height])
-    .paddingOuter(1);
+    .padding(0.8);
 
   const tileData = treemap(rootNode).leaves();
 
@@ -62,6 +63,37 @@ async function treemapDiagram(d3) {
     .attr("data-value", d => d.data.value)
     .attr("width", d => (d.x1 - d.x0))
     .attr("height", d => (d.y1 - d.y0))
-    .attr("fill", d => color(d.data.category))
-    .attr("stroke", "white");
+    .attr("fill", d => color(d.data.category));
+
+  const itemWidth = 110;
+  const swatchSize = 12;
+  const swatchSpacing = 5;
+
+  const legend = svg.append("g")
+    .attr("id", "legend")
+    .attr(
+      "transform",
+      `translate(
+        ${(svg.attr("width") / 2) - (itemWidth * color.domain().length / 2)},
+        ${svg.attr("height") - (margin.bottom * 0.7)}
+      )`,
+    );
+
+  const legendItems = legend.selectAll("g")
+    .data(color.domain())
+    .join("g");
+
+  legendItems.append("rect")
+    .attr("class", "legend-item")
+    .attr("x", (d, i) => i * itemWidth)
+    .attr("y", 0)
+    .attr("width", swatchSize)
+    .attr("height", swatchSize)
+    .attr("fill", d => color(d));
+
+  legendItems.append("text")
+    .attr("x", (d, i) => i * itemWidth + swatchSize + swatchSpacing)
+    .attr("y", 0)
+    .attr("dy", ".71em")
+    .text(d => d);
 }
