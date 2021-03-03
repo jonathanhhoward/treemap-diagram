@@ -5,7 +5,7 @@ async function treemapDiagram(d3) {
     "https://cdn.freecodecamp.org/testable-projects-fcc/data/tree_map/movie-data.json",
   );
 
-  const margin = { top: 100, right: 20, bottom: 50, left: 20 };
+  const margin = { top: 120, right: 20, bottom: 20, left: 20 };
   const width = 800;
   const height = 800;
 
@@ -26,7 +26,7 @@ async function treemapDiagram(d3) {
       {
         id: "description",
         text: "Top 100 Highest Grossing Movies Grouped By Genre",
-        y: margin.top * 0.75,
+        y: margin.top * 0.7,
       },
     ])
     .join("text")
@@ -86,7 +86,7 @@ async function treemapDiagram(d3) {
       "transform",
       `translate(
         ${(svg.attr("width") / 2) - (itemWidth * color.domain().length / 2)},
-        ${svg.attr("height") - (margin.bottom * 0.7)}
+        ${margin.top * 0.85}
       )`,
     );
 
